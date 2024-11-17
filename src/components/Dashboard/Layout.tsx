@@ -1,19 +1,23 @@
-import React from 'react';
-import Navbar from './Navbar';
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
+import Navbar from './Navbar';
 
-interface LayoutProps {
-    children: React.ReactNode;
-}
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-const Layout: React.FC<LayoutProps> = ( { children } ) => {
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
     return (
-        <div className="flex">
-            <Navbar/>
-            <Sidebar/>
-            <main className="ml-64 mt-16 p-6 w-full">
-                {children}
-            </main>
+        <div className="flex h-screen">
+            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <div className="flex flex-col flex-1">
+                <Navbar toggleSidebar={toggleSidebar} />
+                <main className="p-4 overflow-y-auto bg-gray-100 flex-1">
+                    {children}
+                </main>
+            </div>
         </div>
     );
 };

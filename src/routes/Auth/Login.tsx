@@ -1,17 +1,42 @@
-import React, { useState } from 'react';
-import { QarduLogo } from "../../imports/images.ts";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { FaMessage } from "react-icons/fa6";
+import React, {useState, useEffect} from 'react';
+import {QarduLogo} from "../../imports/images.ts";
+import {FaEye, FaEyeSlash} from "react-icons/fa";
+import {FaMessage} from "react-icons/fa6";
 import DropdownLoginLang from "../../components/Dropdown.login.lang.tsx";
-import { Helmet } from "react-helmet";
-import { SITE_TITLE } from "../../utils/SITE_TITLE.ts";
+import {Helmet} from "react-helmet";
+import {SITE_TITLE} from "../../utils/SITE_TITLE.ts";
+import {useNavigate} from 'react-router-dom';
 
 const Login: React.FC = () => {
-    const [ showPassword, setShowPassword ] = useState( false );
+    const [showPassword, setShowPassword] = useState(false);
+    const [studentId, setStudentId] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const isAuthenticated = localStorage.getItem("isAuthenticated");
+        if (isAuthenticated) navigate("/");
+    }, [navigate]);
 
     const togglePasswordVisibility = () => {
-        setShowPassword( !showPassword );
-    }
+        setShowPassword(!showPassword);
+    };
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Authenticate with the provided credentials
+        if (studentId === "345000000000" && password === "Admin1234") {
+            // Save login status
+            if (rememberMe) {
+                localStorage.setItem("isAuthenticated", "true");
+            }
+            navigate("/");
+        } else {
+            alert("Invalid Student ID or Password");
+        }
+    };
 
     return (
         <>
@@ -26,23 +51,15 @@ const Login: React.FC = () => {
                     </div>
                     {/* Logo */}
                     <div className="flex justify-center mb-6">
-                        <img
-                            src={QarduLogo}
-                            alt="Logo"
-                            className="w-20 h-20"
-                        />
+                        <img src={QarduLogo} alt="Logo" className="w-20 h-20"/>
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-center text-xl text-gray-700">
-                        Qarshi davlat universiteti
-                    </h2>
-                    <p className="text-center text-sm text-gray-700">
-                        HEMIS Student axborot tizimi
-                    </p>
+                    <h2 className="text-center text-xl text-gray-700">Qarshi davlat universiteti</h2>
+                    <p className="text-center text-sm text-gray-700">HEMIS Student axborot tizimi</p>
 
                     {/* Login Form */}
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleLogin}>
                         {/* Student ID Input */}
                         <div className="relative">
                             <label htmlFor="studentId" className="sr-only">Talaba ID</label>
@@ -53,12 +70,12 @@ const Login: React.FC = () => {
                                 required
                                 placeholder="Talaba ID"
                                 className="w-full px-4 py-1 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-100"
+                                value={studentId}
+                                onChange={(e) => setStudentId(e.target.value)}
                             />
-                            <span
-                                className="absolute inset-y-0 right-4 flex items-center"
-                            >
+                            <span className="absolute inset-y-0 right-4 flex items-center">
                                 <FaMessage className="text-gray-500"/>
-                        </span>
+                            </span>
                         </div>
 
                         {/* Password Input */}
@@ -71,14 +88,14 @@ const Login: React.FC = () => {
                                 required
                                 placeholder="Parol"
                                 className="w-full px-4 py-1 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-indigo-100"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
-                            <span
-                                onClick={togglePasswordVisibility}
-                                className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
-                            >
-                            {showPassword ? <FaEye className="text-gray-500"/> :
-                                <FaEyeSlash className="text-gray-500"/>}
-                        </span>
+                            <span onClick={togglePasswordVisibility}
+                                  className="absolute inset-y-0 right-4 flex items-center cursor-pointer">
+                                {showPassword ? <FaEye className="text-gray-500"/> :
+                                    <FaEyeSlash className="text-gray-500"/>}
+                            </span>
                         </div>
 
                         {/* Remember Me and Login Button */}
@@ -87,6 +104,8 @@ const Login: React.FC = () => {
                                 <input
                                     type="checkbox"
                                     className="form-checkbox text-indigo-600"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
                                 />
                                 <span className="ml-2 text-gray-600 cursor-pointer">Eslab qolish</span>
                             </label>
@@ -110,8 +129,7 @@ const Login: React.FC = () => {
                     <p className="text-md text-center text-gray-900 mt-4">
                         <span className="text-black font-semibold">Dastur versiyasi</span>: 0.9.20 / <span
                         className="text-black font-semibold">UID</span>: 345 / <span
-                        className="text-black font-semibold">Sana</span>: 11.11.2024
-                        22:01:15
+                        className="text-black font-semibold">Sana</span>: 11.11.2024 22:01:15
                     </p>
                 </div>
             </div>
